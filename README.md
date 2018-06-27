@@ -10,7 +10,7 @@ Let' see how you do that !!
 Start by installing the package.
 
 ```
-$ meteor add meteor-interface
+$ meteor add mexar:meteor-interface
 ```
 
 ## Configuration
