@@ -40,7 +40,7 @@ const GlobalRouter = () => {
                     <title>{title}</title>
                     <meta name="robots" content="noindex, nofollow"/>
                     <meta name="author" content="MeXaR"/>
-                    <link rel="icon" type="image/png" href="https://s3-eu-west-3.amazonaws.com/mexar/projects/logo_interface_black_alone.png"/>
+                    <link rel="icon" type="image/png" href="https://goo.gl/WQahB9"/>
                     
                     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
                     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css"/>

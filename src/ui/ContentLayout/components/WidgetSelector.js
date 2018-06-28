@@ -28,6 +28,9 @@ const WidgetSelector = ({ item = {}, collection = {}, ready }) => {
             case 'html':
                 widget = <div dangerouslySetInnerHTML={{ __html: item[field.name] }} />
                 break
+            case 'date':
+                widget = <div>{(item[field.name] || '').toString()}</div>
+                break
             case 'image':
                 widget = <Image size="small" centered rounded src={item[field.name]} />
                 break
@@ -60,7 +63,7 @@ const WidgetSelector = ({ item = {}, collection = {}, ready }) => {
         return (
             <Segment key={field.name} >
                 <Label as='a' color='green' ribbon size="small">
-                {field.name}
+                {field.label}
                 </Label>
                 {widget}
             </Segment>

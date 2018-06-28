@@ -1,25 +1,20 @@
-import React, { Fragment, Component, PureComponent } from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
-import slugify from 'slugify';
-import { Transition, Spring } from 'react-spring'
+import React, { Component } from 'react';
 
 import DynamicImporter          from "../../../utils/DynamicImporter";
 import { WidgetFormConsumer } from '../../../utils/contexts/WidgetFormContext'
 
+import DateTimePicker from 'react-datetime-picker';
 const TinyMCE = DynamicImporter(() => import('react-tinymce'));
 
 // Packages
 import { 
     Segment,
-    Header,
-    List,
     Label,
     Form,
     Button,
     Checkbox,
     Image,
     Message,
-    Icon,
 } from 'semantic-ui-react';
 import ModalImageSelector from '../../MediaManager/components/ModalImageSelector';
 
@@ -51,7 +46,7 @@ class SingleWidget extends Component {
     }
     
     updateNestedValue = (e, { name, value, checked }) => {
-        const { nested, index, collection2, item2, parent, context = {}, field } = this.props
+        const { index, collection2, item2, parent, context = {}, field } = this.props
         let { updateValue, item, collection, ready } = context;
         if(item2 && collection2){
             collection = collection2
@@ -65,14 +60,14 @@ class SingleWidget extends Component {
     }
 
     updateNormalValue = (e, { name, value, checked }) => {
-        const { nested, index, collection2, item2, parent, context = {}, field } = this.props
-        let { updateValue, item, collection, ready } = context;
+        const { context = {}, field } = this.props
+        let { updateValue } = context;
         updateValue(e, { name, value, checked })
     }
 
     incrementeList = (e) => {
-        const { nested, index, collection2, item2, parent, context = {}, field } = this.props
-        let { updateValue, item, collection, ready } = context;
+        const { nested, index, parent, context = {}, field } = this.props
+        let { updateValue, item, collection } = context;
         if(nested){
             parent[index][name] && 
             parent[index][name].length ? 
@@ -97,7 +92,7 @@ class SingleWidget extends Component {
 
     decrementeList = (e, index) => {
         const { nested, collection2, item2, parent, context, field } = this.props;
-        let { updateValue, item, collection, ready } = context;
+        let { updateValue, item, collection } = context;
         if(nested){
             parent[index][name].splice(index, 1) 
 
@@ -114,8 +109,8 @@ class SingleWidget extends Component {
 
     render() {
         const { id } = this.state
-        const { nested, index, collection2, item2, parent, context = {}, field } = this.props;
-        let { updateValue, item, collection, ready } = context;
+        const { nested, collection2, item2, context = {}, field, config } = this.props;
+        let { item, ready } = context;
 
         if(item2 && collection2){
             collection = collection2
@@ -146,7 +141,7 @@ class SingleWidget extends Component {
                 )
                 
             case 'html':
-                if(typeof tinymce !== 'undefined'){
+                if(typeof tinymce !== 'undefined' && ready){
                     return (
                         <Form.Field className="tinymce-selector">
                             <label>{field.label}</label>
@@ -154,6 +149,7 @@ class SingleWidget extends Component {
                                 <TinyMCE
                                     content={item[field.name]}
                                     config={tinyConfig}
+
                                     onChange={e => {
                                         const updateFunction = nested ? this.updateNestedValue : this.updateNormalValue
                                         updateFunction(e, {
@@ -184,6 +180,7 @@ class SingleWidget extends Component {
                         selectPicture={nested ? this.updateNestedValue : this.updateNormalValue}
                         currentPicture={item[field.name]}
                         name={field.name}
+                        config={config}
                      />
                       {item[field.name] && 
                         <Button 
@@ -211,6 +208,36 @@ class SingleWidget extends Component {
                         />
                     </Form.Field>
                 )
+
+            case 'date':
+                return (
+                    <Form.Field key={id}>
+                        <label>{field.label}</label>
+                        <DateTimePicker
+                            className="datepicker"
+                            calendarClassName="calendar"
+                            clockClassName="clock"
+                            isClockOpen={false}
+                            onChange={(date) => {
+                                    if (nested) {
+                                        this.updateNestedValue({}, {
+                                            name: field.name,
+                                            value:  date,
+                                        })
+                                    }
+                                    else {
+                                        this.updateNormalValue({}, {
+                                            name: field.name,
+                                            value:  date,
+                                        })
+                                    }
+                                }
+                            }
+                            key={id}
+                            value={item[field.name] instanceof Date?item[field.name]:new Date() }
+                        />
+                    </Form.Field>
+                )
                 
             case 'list':
                 if(field.fields){
@@ -228,6 +255,8 @@ class SingleWidget extends Component {
                                             nested={true}
                                             index={i2}
                                             parent={item[field.name]}
+                                            ready={ready}
+                                            config={config}
                                         />
                                     </Segment.Group>
                                     <a className="decrementation" onClick={(e) => this.decrementeList(e, i2)}>Remove</a>

@@ -152,6 +152,7 @@ class ContentEdit extends Component {
                             collection={collection}
                             item={itemState}
                             ready={ready}
+                            config={config}
                             updateValue={this.updateValue}
                         />
                     </Form>

@@ -155,5 +155,48 @@ const AdminLayoutStyle = styled.main`
     .ui.fitted.toggle.checkbox {
         background-color: #21ba45;
     }
+    .datepicker {
+
+        padding: 8px;
+        width: 100%;
+        border-top-left-radius: 0;
+        border: 2px solid #21ba45;
+        border-radius: 5px;
+
+        >div {
+            border: none;
+        }
+        input {
+            padding: 0 !important;
+            border: none !important;
+            color: #444a57;
+            font-size: 15px;
+            text-align: center;
+            width: auto !important;
+        }
+        >div:nth-child(2) {
+            position: fixed;
+            top: 0px !important;
+            left: 0px !important;
+            right: 0px !important;
+            bottom: 0px !important;
+            background: rgba(0,0,0,0.4);
+            z-index: 4;
+            width: 100vW;
+        }
+        .react-datetime-picker__clock {
+            display: none !important;
+        }
+    }
+    .calendar {
+        margin-bottom: 20px;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        left: 50%;
+    }
+    .clock {
+        display: none;
+    }
 }
 `

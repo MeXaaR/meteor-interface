@@ -40,7 +40,7 @@ const Home = ({ config = {} }) => (
                     }} 
                     textAlign='center'
                 >
-                    <Image src={config.logo} />
+                    <Image src="https://goo.gl/WQahB9" />
                     Welcome on Interface
                     <Header.Subheader>Manage your content, media and database.</Header.Subheader>
                 </Header>

@@ -67,7 +67,7 @@ class Login extends Component {
                                 }} 
                                 textAlign='center'
                             >
-                                <Image src={config.logo} />
+                                <Image src="https://goo.gl/WQahB9" />
                                 Welcome on Interface
                                 <Header.Subheader>Please Login</Header.Subheader>
                             </Header>

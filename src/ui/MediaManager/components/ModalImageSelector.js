@@ -26,7 +26,7 @@ class ModalImageSelector extends Component {
     
     render() {
         const { open } = this.state;
-        const { selectPicture, link, currentPicture } = this.props;
+        const { selectPicture, link, currentPicture, config } = this.props;
         return (
             <Fragment>
                 <Button 
@@ -46,6 +46,7 @@ class ModalImageSelector extends Component {
                             selector={true}
                             currentPicture={currentPicture}
                             updatePicture={this.updatePicture}
+                            config={config}
                         />
                     </Modal.Content>
                     

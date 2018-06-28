@@ -267,8 +267,6 @@ const MediaBrowserStyle = styled.div`
     .browser-container {
         min-height: 200px;
         .item {
-            display: flex;
-            align-items: center;
             transition: all 0.2s ease-in;
             cursor: pointer;
             &:hover {

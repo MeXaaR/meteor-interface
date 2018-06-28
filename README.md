@@ -25,7 +25,7 @@ const LandingPage = new Mongo.Collection("landing-page");
 
 import { createInterface } from 'meteor/mexar:meteor-interface'
 
-// widget list: string, html, boolean, list, image
+// widget list: string, html, boolean, list, image, date
 const config = {
     title: 'Interface CMS',  // Title on the brower tab
     root: '/admin', // route to Interface, it must be the same as the route in your router
@@ -50,6 +50,7 @@ const config = {
                 { name: 'logo', label: 'Logo', widget: 'image' },
                 { name: 'link', label: 'Link', widget: 'string' },
                 { name: 'finished', label: 'Finished', widget: 'boolean' },
+                { name: 'createdAt', label: 'Created At', widget: 'date' },
                 { name: 'description', label: 'Description', widget: 'html' },
                 { name: 'techno', label: 'Techno', widget: 'list' }
             ]
@@ -59,27 +60,41 @@ const config = {
             name: 'LandingPage', // Must be a string written exactly like the collection variable
             label: 'Landing page', // displayed label in the interface
             mongo: LandingPage,
-            icon: 'address book',
+            icon: 'rocket',
             visible: ['editor', 'admin', 'super-admin'], // visible for these roles
             edit: ['admin', 'super-admin', 'editor'], // editable by these roles
             create: ['admin', 'super-admin'], // creatable by these roles
             fields: [
-                { name: 'name', label: 'Name', widget: 'string' },
-                { name: 'logo', label: 'Logo', widget: 'image' },
-                { name: 'link', label: 'Link', widget: 'string' },
-                { name: 'finished', label: 'Finished', widget: 'boolean' },
-                { name: 'description', label: 'Description', widget: 'html' },
-                { name: 'techno', 
-                label: 'Techno',
+                { name: 'catch', label: 'Catch phrase', widget: 'string' },
+
+                { name: 'firstTitle', label: 'First section title', widget: 'string' },
+                { name: 'aboutNode', 
+                label: 'About NodeJS',
                 widget: 'list',
                 fields: [
-                    { name: 'name', label: 'Name', widget: 'string' },
-                    { name: 'logo', label: 'Logo', widget: 'image' },
-                    { name: 'description', label: 'Description', widget: 'html' },
-                ]
-            }
+                        { name: 'title', label: 'Title', widget: 'string' },
+                        { name: 'icon', label: 'Icon', widget: 'string' },
+                        { name: 'image', label: 'Image if no icon', widget: 'image' },
+                        { name: 'description', label: 'Description', widget: 'html' },
+                    ]
+                },
+
+                { name: 'clientsTitle', label: 'Clients section title', widget: 'string' },
+
+                { name: 'contactTitle', label: 'Contact section title', widget: 'string' },
+                { name: 'email', label: 'Contact email address', widget: 'string' },
+                { name: 'networks', 
+                label: 'Social networks',
+                widget: 'list',
+                fields: [
+                        { name: 'title', label: 'Title', widget: 'string' },
+                        { name: 'icon', label: 'Icon', widget: 'string' },
+                        { name: 'color', label: 'Color', widget: 'string' },
+                        { name: 'link', label: 'Link', widget: 'string' },
+                    ]
+                },
             ]
-        }
+        },
     ]
 }
 
@@ -120,6 +135,7 @@ Different widgets are already in Interface to edit and create your databases ent
 | html | String | A tinymce wysiwyg |
 | boolean | Boolean | A checkbox |
 | image | String | an image picker |
+| date | Date | a date picker |
 | list | Array | Depends if you define some fields or not (check example) |
 
 ## Evolutions and issues
@@ -127,5 +143,4 @@ Don't hesitate to tell me if there is some issues I must correct or if you have 
 
 
 ## To Do
- - A Date widget
  - A rate limiter protection for methods
