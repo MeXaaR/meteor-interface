@@ -1,4 +1,4 @@
-import React, { Component }     from "react"
+import React, { Component, Fragment }     from "react"
 
 // Packages
 import { Helmet }               from "react-helmet";
@@ -43,14 +43,15 @@ componentWillReceiveProps = (nextProps) => {
   render() {
     const { user, permissions, loggingIn, authenticated, authorized, config = {}, root } = this.props;
     const { error } = this.state;
+    const isMobile = window.innerWidth < 768
     if(error){
         return (
             <div>{JSON.stringify(error)}</div>
         )
     }
     return (
-      <AdminLayoutStyle id="admin-layout">
-        <MainMenu {...this.props} />
+        <MainMenu {...this.props}>
+      <AdminLayoutStyle id="admin-layout" isMobile={isMobile} >
           <Switch>
 
             <ConditionnalRoute
@@ -88,7 +89,8 @@ componentWillReceiveProps = (nextProps) => {
 
           </Switch>
           <ToastContainer />
-      </AdminLayoutStyle>
+          </AdminLayoutStyle>
+          </MainMenu>
     )
   }
 }
@@ -96,7 +98,8 @@ componentWillReceiveProps = (nextProps) => {
 export default AdminLayout;
 
 const AdminLayoutStyle = styled.main`
-  padding-top: 70px;
+  padding-top: ${ ({ isMobile }) => isMobile ? '45px' : '70px' } ;
+  min-height: 100vh;
   .ui.form .field {
     label {
         background-color: #21ba45;

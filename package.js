@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mexar:meteor-interface',
-  version: '0.0.14',
+  version: '0.0.15',
   // Brief, one-line summary of the package.
   summary: 'Simple Content Management System to generate your administration interface for Meteor and React.',
   // URL to the Git repository containing the source code for this package.

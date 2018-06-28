@@ -20,12 +20,11 @@ export default withTracker(() => {
      roles.map(role => {
       permissions[role] = Meteor.isClient && Roles.userIsInRole(Meteor.userId(), [role])
     })
-    
     return {
-      user: Meteor.isServer ? false : Meteor.user(),
-      loggingIn: Meteor.isServer ? true : Meteor.loggingIn(),
-      authenticated: Meteor.isServer ? false : Meteor.userId() !== null && Meteor.userId() !== undefined,
-      authorized: Meteor.isServer ? false : Roles.userIsInRole(Meteor.userId(), roles),
+      user: Meteor.user(),
+      loggingIn: Meteor.loggingIn(),
+      authenticated: Meteor.userId() !== null && Meteor.userId() !== undefined,
+      authorized: Roles.userIsInRole(Meteor.userId(), roles),
       config,
       permissions
     };

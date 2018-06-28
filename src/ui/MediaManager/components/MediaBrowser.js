@@ -97,8 +97,8 @@ class MediaBrowser extends Component {
 
 
     render(){
-        const { changes, loaded, confirmation, confirmationObject, loading, folders, files, route, link, error, selectedPicture } = this.state;
-        const { interfaceSettings = {}, history, ready, selector, updatePicture, currentPicture, config } = this.props;
+        const { confirmation, confirmationObject, loading, folders, files, route, link, error, selectedPicture } = this.state;
+        const { selector, updatePicture, currentPicture, config } = this.props;
         
         if(error){
             throw new Error(error.message)
@@ -106,12 +106,14 @@ class MediaBrowser extends Component {
 
         const refresh = () =>this.goFolder(route)
         const isAuthorized = Roles.userIsInRole(Meteor.userId(), config.media_roles);
+        const isMobile = window.innerWidth < 768
+        const desktopStyle = isMobile ? {} : {display: 'flex', justifyContent: 'space-between', alignItems: 'center'}
 
         return(
             <MediaBrowserStyle>
                 <Spring from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
                 { styles => 
-                    <Segment style={{...styles, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Segment style={{...styles, ...desktopStyle }}>
                         <Header content='Media Manager' as="h5" />
                         <div>
                             <Button
@@ -119,6 +121,7 @@ class MediaBrowser extends Component {
                                 onClick={refresh}
                                 color="teal"
                                 size='mini'
+                                fluid={isMobile}
                                 labelPosition="left"
                                 content="Refresh"
                             />
@@ -126,11 +129,13 @@ class MediaBrowser extends Component {
                                 <FileCreator 
                                 refresh={refresh}
                                 route={route}
+                                isMobile={isMobile}
                             />}
                             {isAuthorized && 
                                 <FolderCreator 
                                 refresh={refresh}
                                 route={route}
+                                isMobile={isMobile}
                             />}
                         </div>
                     </Segment> }
@@ -262,6 +267,9 @@ const MediaBrowserStyle = styled.div`
     }
     .button {
         transition: all 0.3s ease-in !important;
+    }
+    .button.fluid {
+        margin-top: 5px !important; 
     }
 
     .browser-container {

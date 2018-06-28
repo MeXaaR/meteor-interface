@@ -1,56 +1,146 @@
-import React            from 'react';
-import { Menu, Container } from 'semantic-ui-react';
+import React, { Component, Fragment }            from 'react';
+import { Menu, Container, Sidebar, Button, Divider } from 'semantic-ui-react';
 import styled                   from 'styled-components';
 
-const MainMenu = ({ location, history, permissions, root, config }) => (
-    <MenuStyle>
-        <Menu 
-            pointing 
-            secondary 
-            fixed="top"
-            color="green"
-        >
-            <Container>
-                <Menu.Item 
+class SideBarWrapper extends Component {
+    state = { visible: false }
+  
+    handleButtonClick = () => this.setState({ visible: !this.state.visible })
+  
+    handleSidebarHide = () => this.setState({ visible: false })
+  
+    render() {
+      const { visible } = this.state
+      const { children } = this.props
+      const isMobile = window.innerWidth < 768
+
+      if(!isMobile){
+          return (
+              <Fragment>
+                <MenuStyle>
+                    <Menu
+                        pointing 
+                        secondary 
+                        fixed="top"
+                        className="mainMenu"
+                        color="green"
+                    >
+                    <Container>
+                        <MainMenu { ...this.props } isMobile={isMobile} close={this.handleSidebarHide} />
+                    </Container>
+                    
+                    </Menu>
+                </MenuStyle>
+                {children}
+            </Fragment>
+          ) 
+      }
+  
+      return (
+        <MenuStyle>
+            {!visible &&
+                <Button 
+                onClick={this.handleButtonClick}
+                icon='content'
+                color="green"
+                circular
+                className="mobileButton"
+            />}
+  
+          <Sidebar.Pushable >
+            <Sidebar
+              as={Menu}
+              animation='overlay'
+              inverted
+              className="mainMenu mobile"
+              onHide={this.handleSidebarHide}
+              vertical
+              visible={visible}
+              color="green"
+              borderless
+            >
+            <MainMenu { ...this.props } isMobile={isMobile} close={this.handleSidebarHide} />
+            </Sidebar>
+  
+            <Sidebar.Pusher dimmed={visible} >
+              { children }
+            </Sidebar.Pusher>
+          </Sidebar.Pushable>
+        </MenuStyle>
+      )
+    }
+  }
+
+const MainMenu = ({ location, history, permissions, root, config, close, isMobile }) => (
+    
+            <Fragment>
+                {!isMobile && 
+                    <Menu.Item 
                     name='website' 
-                    onClick={() => history.push('/')}
-                />
+                    onClick={() =>{ close(); history.push('/')}}
+                />}
                 <Menu.Item 
                     name='home' 
                     active={location.pathname === root} 
-                    onClick={() => history.push(root)}
+                    onClick={() =>{ close(); history.push(root)}}
                 />
                 <Menu.Item 
                     name='content' 
                     active={location.pathname.indexOf(`${root}/collections`) > -1} 
-                    onClick={() => history.push(`${root}/collections`)} 
+                    onClick={() =>{ close(); history.push(`${root}/collections`)}} 
                 />
                 <Menu.Item 
                     name='media'
                     active={location.pathname.indexOf(`${root}/media`) > -1} 
-                    onClick={() => history.push(`${root}/media`)} 
+                    onClick={() =>{ close(); history.push(`${root}/media`)}} 
                 />
                 {permissions[config.roles[0]] &&
                     <Menu.Item 
                         name='settings'
                         active={location.pathname.indexOf(`${root}/settings`) > -1} 
-                        onClick={() => history.push(`${root}/settings`)} 
+                        onClick={() =>{ close(); history.push(`${root}/settings`)}} 
                     />}
                 <Menu.Item 
                     name='profile' 
                     active={location.pathname.indexOf(`${root}/profile`) > -1} 
-                    onClick={() => history.push(`${root}/profile`)} 
+                    onClick={() =>{ close(); history.push(`${root}/profile`)}} 
                     position='right'
                 />
-            </Container>
-        </Menu>
-    </MenuStyle>
+                {isMobile && 
+                    <Fragment>
+                        <Divider/>
+                        <Menu.Item 
+                            name='website' 
+                            onClick={() =>{ close(); history.push('/')}}
+                        />
+                    </Fragment>
+            }
+            </Fragment>
 )
 
-export default MainMenu
+export default SideBarWrapper
 
 const MenuStyle = styled.div`
-.menu {
+min-height: 100vh;
+.mainMenu:not(.mobile) {
     background-color: #EFF0F4!important;
+}
+.mainMenu.mobile {
+    z-index: 4;
+    .item {
+        text-transform: uppercase;
+    }
+}
+.pushable {
+    min-height: 100vh !important;
+    >.pusher {
+        min-height: 100vh !important;
+    }
+}
+.mobileButton {
+    position: fixed;
+    left: 5px;
+    z-index: 1;
+    top: 5px;
 }
 `

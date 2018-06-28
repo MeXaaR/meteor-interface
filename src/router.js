@@ -30,7 +30,7 @@ const GlobalRouter = () => {
     return (
         <UserProvider>
         <UserContext.Consumer>
-        {({ user, permissions, loggingIn, authenticated, authorized, config = {} }) => {
+        {({ user, permissions, loggingIn, authenticated, authorized, config = {}, isMobile }) => {
 
             const { root, title, login } = config
             notifierInit(config)
@@ -56,7 +56,7 @@ const GlobalRouter = () => {
                             condition={!authenticated} 
                             Element={Login}  
                             redirect={root} 	   
-                            computedProps={{ root, user, permissions, loggingIn, authenticated, config }}  
+                            computedProps={{ isMobile, root, user, permissions, loggingIn, authenticated, config }}  
                         />
                         <ConditionnalRoute
                             path={root}
@@ -64,7 +64,7 @@ const GlobalRouter = () => {
                             condition={authorized}  
                             Element={AdminLayout}
                             redirect={`${root}${login}`}   
-                            computedProps={{ root, user, permissions, loggingIn, authenticated, authorized, config }}  
+                            computedProps={{ isMobile, root, user, permissions, loggingIn, authenticated, authorized, config }}  
                         />
                     </Switch>
                     <UploaderNotifier />

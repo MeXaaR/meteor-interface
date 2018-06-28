@@ -54,6 +54,7 @@ class FolderCreator extends Component {
 
 
     render(){
+        const { isMobile } = this.props
         const { loading, open, name, error } = this.state;
 
         if(error){
@@ -67,6 +68,7 @@ class FolderCreator extends Component {
                     icon="folder"
                     size='mini'
                     color="blue"
+                    fluid={isMobile}
                     labelPosition="left"
                     onClick={this.toggleModal}
                 />
