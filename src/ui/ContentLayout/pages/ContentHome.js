@@ -13,9 +13,6 @@ import {
 } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-// Components
-import LoadingComponent from '../../components/LoadingComponent'
-
 const ContentHome = ({ counters = [], history, ready, config }) => {
     // Extract datas from config
     const { 

@@ -25,7 +25,7 @@ const LandingPage = new Mongo.Collection("landing-page");
 
 import { createInterface } from 'meteor/mexar:meteor-interface'
 
-// widget list: string, html, boolean, list, image, date
+// widget list: string, html, boolean, list, image, date, number
 const config = {
     title: 'Interface CMS',  // Title on the brower tab
     root: '/admin', // route to Interface, it must be the same as the route in your router
@@ -50,6 +50,7 @@ const config = {
                 { name: 'logo', label: 'Logo', widget: 'image' },
                 { name: 'link', label: 'Link', widget: 'string' },
                 { name: 'finished', label: 'Finished', widget: 'boolean' },
+                { name: 'position', label: 'Position', widget: 'number' },
                 { name: 'createdAt', label: 'Created At', widget: 'date' },
                 { name: 'description', label: 'Description', widget: 'html' },
                 { name: 'techno', label: 'Techno', widget: 'list' }
@@ -134,8 +135,9 @@ Different widgets are already in Interface to edit and create your databases ent
 | multiline | String | A textarea |
 | html | String | A tinymce wysiwyg |
 | boolean | Boolean | A checkbox |
-| image | String | an image picker |
-| date | Date | a date picker |
+| image | String | An image picker |
+| date | Date | A date picker |
+| number | Number | A simple input type number |
 | list | Array | Depends if you define some fields or not (check example) |
 
 ## Evolutions and issues

@@ -17,6 +17,7 @@ import {
     Message,
 } from 'semantic-ui-react';
 import ModalImageSelector from '../../MediaManager/components/ModalImageSelector';
+import ErrorHandler from '../../../utils/ErrorHandler';
 
 const tinyConfig = {
     height: 300,
@@ -118,6 +119,17 @@ class SingleWidget extends Component {
         }
 
         switch (field.widget){
+            case 'number':
+                return (
+                    <Form.Input
+                        value={item[field.name]}
+                        label={field.label}
+                        key={id}
+                        type="number"
+                        onChange={ nested ? this.updateNestedValue : this.updateNormalValue}
+                        name={field.name}
+                    />
+                )
             case 'string':
                 return (
                     <Form.Input
@@ -288,11 +300,14 @@ class SingleWidget extends Component {
                         />
                     )
                 }
+            default:
+                widget = <div>There is an error with the widget name {field.widget}</div>
+                break
         }
     }
 }
 
 
-export default WidgetSelector;
+export default ErrorHandler(WidgetSelector);
 
 

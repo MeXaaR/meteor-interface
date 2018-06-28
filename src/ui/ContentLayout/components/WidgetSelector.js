@@ -9,6 +9,7 @@ import {
     Message,
     Icon,
 } from 'semantic-ui-react';
+import ErrorHandler from '../../../utils/ErrorHandler';
 
 
 const WidgetSelector = ({ item = {}, collection = {}, ready }) => {
@@ -19,12 +20,15 @@ const WidgetSelector = ({ item = {}, collection = {}, ready }) => {
     const list = collection.fields ? collection.fields.map(field => {
         let widget = null
         switch (field.widget){
+            case 'number':
+                widget = <div>{item[field.name]}</div>
+                break
             case 'string':
                 widget = <div>{item[field.name]}</div>
                 break
             case 'multiline':
-            widget = <div style={{ whiteSpace: 'pre-line' }} dangerouslySetInnerHTML={{ __html: item[field.name] }} />
-            break
+                widget = <div style={{ whiteSpace: 'pre-line' }} dangerouslySetInnerHTML={{ __html: item[field.name] }} />
+                break
             case 'html':
                 widget = <div dangerouslySetInnerHTML={{ __html: item[field.name] }} />
                 break
@@ -58,6 +62,8 @@ const WidgetSelector = ({ item = {}, collection = {}, ready }) => {
                         </List>
                     )
                 }
+            default:
+                widget = <div>There is an error with the widget name {field.widget}</div>
                 break
         }
         return (
@@ -74,4 +80,4 @@ const WidgetSelector = ({ item = {}, collection = {}, ready }) => {
 } 
 
 
-export default WidgetSelector;
+export default ErrorHandler(WidgetSelector);

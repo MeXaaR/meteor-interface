@@ -155,11 +155,20 @@ const AdminLayoutStyle = styled.main`
     .ui.fitted.toggle.checkbox {
         background-color: #21ba45;
     }
+    span.react-datetime-picker__button__input__divider {
+        margin-right: 5px;
+    }
+
+    input.react-datetime-picker__button__input__input.react-datetime-picker__button__input__minute.react-datetime-picker__button__input__input--hasLeadingZero {
+        margin-left: -9px;
+        background-color: transparent;
+    }
+
     .datepicker {
 
         padding: 8px;
         width: 100%;
-        border-top-left-radius: 0;
+        border-top-left-radius: 0 !important;
         border: 2px solid #21ba45;
         border-radius: 5px;
 
