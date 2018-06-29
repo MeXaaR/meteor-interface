@@ -68,7 +68,7 @@ class Login extends Component {
                                 textAlign='center'
                             >
                                 <Image src="https://goo.gl/WQahB9" />
-                                Welcome on Interface flo
+                                Welcome on Interface
                                 <Header.Subheader>Please Login</Header.Subheader>
                             </Header>
                         )}

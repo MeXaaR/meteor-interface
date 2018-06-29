@@ -17,7 +17,7 @@ class SideBarWrapper extends Component {
       if(!isMobile){
           return (
               <Fragment>
-                <MenuStyle>
+                <MenuStyle isMobile={isMobile}>
                     <Menu
                         pointing 
                         secondary 
@@ -53,7 +53,6 @@ class SideBarWrapper extends Component {
               animation='overlay'
               inverted
               className="mainMenu mobile"
-              onHide={this.handleSidebarHide}
               vertical
               visible={visible}
               color="green"
@@ -62,7 +61,7 @@ class SideBarWrapper extends Component {
             <MainMenu { ...this.props } isMobile={isMobile} close={this.handleSidebarHide} />
             </Sidebar>
   
-            <Sidebar.Pusher dimmed={visible} >
+            <Sidebar.Pusher dimmed={visible} onClick={visible ? this.handleSidebarHide : null} >
               { children }
             </Sidebar.Pusher>
           </Sidebar.Pushable>
@@ -121,7 +120,7 @@ const MainMenu = ({ location, history, permissions, root, config, close, isMobil
 export default SideBarWrapper
 
 const MenuStyle = styled.div`
-min-height: 100vh;
+${({ isMobile }) => isMobile ? 'min-height: 100vh;' : ''}
 .mainMenu:not(.mobile) {
     background-color: #EFF0F4!important;
 }
