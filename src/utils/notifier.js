@@ -1,8 +1,5 @@
 import React     from "react"
 import { toast } from 'react-toastify';
-if(Meteor.isClient){
-    require('react-toastify/dist/ReactToastify.css');
-}
 
 const notifierInit = (config) => {
 

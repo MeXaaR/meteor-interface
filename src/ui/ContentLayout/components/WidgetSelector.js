@@ -62,6 +62,7 @@ const WidgetSelector = ({ item = {}, collection = {}, ready }) => {
                         </List>
                     )
                 }
+                break
             default:
                 widget = <div>There is an error with the widget name {field.widget}</div>
                 break
