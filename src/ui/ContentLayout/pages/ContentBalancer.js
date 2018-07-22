@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import slugify from 'slugify';
 import { Redirect } from 'react-router-dom'
@@ -13,19 +13,38 @@ const params = new ReactiveVar({
     search: ''
 })
 
-const ContentBalancer = ({ collection = {}, config = {}, root, ...rest }) => {
-    if(collection.single){
-        const { match, list = {}, ready } = rest
-        const { collectionSlug } = match.params;
-        if(!ready){
-            return <LoadingComponent/>
+class ContentBalancer extends Component {
+
+    state = {
+        pathname: ''
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (!state.pathname) {
+            return { pathname: props.location.pathname }
+        } else if (state.pathname !== props.location.pathname) {
+            params.set({ search: '', page: 1 })
+            return { pathname: props.location.pathname }
         }
-        if(list._id){
-            return <Redirect to={`${root}/collections/${collectionSlug}/${list._id}`} />
-        } 
-        return <Redirect to={`${root}/collections/${collectionSlug}/new`} />
-    } 
-    return <ContentList params={params} collection={collection} {...rest} config={config} root={root} />
+        return null;
+    }
+
+    render() {
+        const { collection = {}, config = {}, root, ...rest } = this.props
+
+        if (collection.single) {
+            const { match, list = {}, ready } = rest
+            const { collectionSlug } = match.params;
+            if (!ready) {
+                return <LoadingComponent />
+            }
+            if (list._id) {
+                return <Redirect to={`${root}/collections/${collectionSlug}/${list._id}`} />
+            }
+            return <Redirect to={`${root}/collections/${collectionSlug}/new`} />
+        }
+        return <ContentList params={params} collection={collection} {...rest} config={config} root={root} />
+    }
 }
 
 export default withTracker(({ match, config }) => {
@@ -35,7 +54,7 @@ export default withTracker(({ match, config }) => {
 
     collections.map(coll => {
         const slug = slugify(coll.label, { lower: true })
-        if(slug === collectionSlug){
+        if (slug === collectionSlug) {
             collection = coll
         }
     })
@@ -45,6 +64,6 @@ export default withTracker(({ match, config }) => {
     const ready = subscription.ready()
     const firstField = collection.fields[0].name
     const number = Counts.get(`count-all-${slugify(collection.label, { lower: true })}`)
-    const list = collection.single ? collection.mongo.findOne({}) :  collection.mongo.find({}, { sort: { [firstField]: 1, _id: 1 } }).fetch()    
+    const list = collection.single ? collection.mongo.findOne({}) : collection.mongo.find({}, { sort: { [firstField]: 1, _id: 1 } }).fetch()
     return { collection, ready, list, firstField, number };
-  })(ContentBalancer);
+})(ContentBalancer);

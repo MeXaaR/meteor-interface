@@ -23,24 +23,40 @@ class ModalImageSelector extends Component {
         this.toggleModal()
         console.log(link)
     }
-    
+
     render() {
         const { open } = this.state;
         const { selectPicture, link, currentPicture, config } = this.props;
         return (
             <Fragment>
-                <Button 
-                    size='mini' 
+                <Button
+                    size='mini'
                     color="blue"
                     content="Choose a picture"
                     onClick={this.toggleModal}
                 />
-                <Modal 
-                    open={open} 
+                <Modal
+                    open={open}
                     size='large'
                 >
-                    <Icon name="close" onClick={this.toggleModal} />
-                    <Header icon='picture' content='Picture' />
+                    <Header style={{ display: 'flex', justifyContent: "space-between" }} >
+                        <span>
+                            <Icon name="picture" />
+                            Picture
+                        </span>
+                        <Button
+                            icon="close"
+                            onClick={this.toggleModal}
+                            style={{
+                                fontSize: 15,
+                                height: 35,
+                                width: 35,
+                                padding: 5,
+                            }}
+                            color="green"
+                            circular
+                        />
+                    </Header>
                     <Modal.Content>
                         <MediaBrowser
                             selector={true}
@@ -49,7 +65,7 @@ class ModalImageSelector extends Component {
                             config={config}
                         />
                     </Modal.Content>
-                    
+
                 </Modal>
             </Fragment>
         )

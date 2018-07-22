@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 
 // Packages
-import { 
-    Menu, 
+import {
+    Menu,
     Input
 } from 'semantic-ui-react';
 import slugify from 'slugify';
-import { Transition, Spring } from 'react-spring'
+import { Transition, Spring, animated } from 'react-spring'
+
+
+const AnimatedMenu = animated(Menu)
 
 class ContentLeftMenu extends Component {
     state = {
@@ -23,31 +26,31 @@ class ContentLeftMenu extends Component {
         const { collections = [] } = config
 
         collections.map(coll => {
-            if(search.test(coll.label)){
+            if (search.test(coll.label)) {
                 list.push(coll)
             }
         })
         return (
-            <Spring from={{ opacity: 0, marginLeft: -600 }} to={{ opacity: 1, marginLeft: 0 }}>
-                { styles => (
-                    <Menu 
-                        pointing 
+            <Spring native from={{ opacity: 0, marginLeft: -600 }} to={{ opacity: 1, marginLeft: 0 }}>
+                {styles => (
+                    <AnimatedMenu
+                        pointing
                         fluid
-                        vertical 
+                        vertical
                         style={styles}
                         color="green"
                     >
-                        <Menu.Item 
+                        <Menu.Item
                             header
-                            name='collections' 
-                            onClick={() => history.push(`${root}/collections`)} 
+                            name='collections'
+                            onClick={() => history.push(`${root}/collections`)}
                         />
                         <Menu.Item>
-                            <Input 
+                            <Input
                                 onChange={this.updateSearch}
-                                size="small" 
-                                icon='search' 
-                                placeholder='Search all...' 
+                                size="small"
+                                icon='search'
+                                placeholder='Search all...'
                             />
                         </Menu.Item>
                         <Transition
@@ -55,24 +58,24 @@ class ContentLeftMenu extends Component {
                             from={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
                             enter={{ opacity: 1, height: 40, paddingTop: 13, paddingBottom: 13 }}
                             leave={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}>
-                            { list.map(coll => styles => {
-                                if(!search.test(coll.label) || !Roles.userIsInRole(Meteor.userId(), coll.visible)){
+                            {list.map(coll => styles => {
+                                if (!search.test(coll.label) || !Roles.userIsInRole(Meteor.userId(), coll.visible)) {
                                     return null
                                 }
-            
+
                                 return (
-                                    <Menu.Item 
+                                    <Menu.Item
                                         name={coll.label}
                                         style={styles}
                                         icon={coll.icon}
                                         key={slugify(coll.label, { lower: true })}
-                                        active={location.pathname.indexOf(`${root}/collections/${slugify(coll.label, { lower: true })}`) > -1 }
-                                        onClick={() => history.push(`${root}/collections/${slugify(coll.label, { lower: true })}`)} 
+                                        active={location.pathname.indexOf(`${root}/collections/${slugify(coll.label, { lower: true })}`) > -1}
+                                        onClick={() => history.push(`${root}/collections/${slugify(coll.label, { lower: true })}`)}
                                     />
                                 )
-                            }) }
+                            })}
                         </Transition>
-                    </Menu>
+                    </AnimatedMenu>
                 )}
             </Spring>
         )
