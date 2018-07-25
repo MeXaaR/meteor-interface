@@ -260,8 +260,9 @@ class SingleWidget extends Component {
                                 }
                             }
                             }
-                            key={id}
-                            value={item[field.name] instanceof Date ? item[field.name] : new Date()}
+                            }
+                        key={id}
+                        value={item[field.name] instanceof Date ? item[field.name] : new Date()}
                         />
                     </Form.Field>
                 )
