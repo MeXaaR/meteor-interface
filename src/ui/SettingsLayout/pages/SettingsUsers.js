@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Spring } from 'react-spring'
+import { Spring, animated } from 'react-spring'
 
 // Packages
-import { 
+import {
     Segment,
     Header,
     Input
@@ -22,42 +22,47 @@ class SettingsUsers extends Component {
 
     handlePaginationChange = (e, { activePage }) => this.setState({ page: activePage })
 
-    render(){
-        const { history, config  } = this.props
+    render() {
+        const { history, config } = this.props
         const { search, page } = this.state;
 
         return (
             <SettingsUsersStyle>
-            <Spring from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
-            { styles => 
-                <Segment style={{...styles, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Header style={{ marginBottom: 0 }} content="Users" icon="users" as="h5" />
-                    <UsersCreator config={config} />
-                </Segment> }
-            </Spring>
+                <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
+                    {styles =>
+                        <animated.div style={styles} >
+                            <Segment style={{ marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Header style={{ marginBottom: 0 }} content="Users" icon="users" as="h5" />
+                                <UsersCreator config={config} />
+                            </Segment>
+                        </animated.div>}
+                </Spring>
 
-            <Spring from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
-            { styles => 
-                <Input 
-                    placeholder="Search..."
-                    style={{ ...styles, marginBottom: 10, borderRadius: 5, boxShadow: "1px 1px 2px 0px rgba(0,0,0, 0.3)" }}
-                    onChange={this.updateSearch}
-                    fluid 
-                    value={search}
-                /> }
-            </Spring>
+                <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
+                    {styles =>
+                        <animated.div style={styles} >
+                            <Input
+                                placeholder="Search..."
+                                style={{ marginBottom: 10, borderRadius: 5, boxShadow: "1px 1px 2px 0px rgba(0,0,0, 0.3)" }}
+                                onChange={this.updateSearch}
+                                fluid
+                                value={search}
+                            />
+                        </animated.div>}
+                </Spring>
 
-                <Spring from={{ opacity: 0, marginTop: 600 }} to={{ opacity: 1, marginTop: 0 }}>
-                { styles2 => 
-                    <UsersList 
-                        style={styles2} 
-                        history={history} 
-                        collection={Meteor.users}
-                        config={config}
-                        search={search}
-                        page={page}
-                        handlePaginationChange={this.handlePaginationChange}
-                    /> }
+                <Spring native from={{ opacity: 0, marginTop: 600 }} to={{ opacity: 1, marginTop: 0 }}>
+                    {styles2 =>
+                        <animated.div style={styles2} >
+                            <UsersList
+                                history={history}
+                                collection={Meteor.users}
+                                config={config}
+                                search={search}
+                                page={page}
+                                handlePaginationChange={this.handlePaginationChange}
+                            />
+                        </animated.div>}
                 </Spring>
             </SettingsUsersStyle>
         )

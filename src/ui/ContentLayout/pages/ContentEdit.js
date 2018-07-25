@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import slugify from 'slugify';
-import { Spring } from 'react-spring'
+import { Spring, animated } from 'react-spring'
 
 // Packages
-import { 
+import {
     Segment,
     Header,
     Button,
@@ -14,8 +14,9 @@ import styled from 'styled-components';
 
 // Components
 import Confirmation from '../../components/Confirmation'
-import WidgetFormSelector   from '../components/WidgetFormSelector'
+import WidgetFormSelector from '../components/WidgetFormSelector'
 import { WidgetSelectorContext } from '../../../utils/contexts/WidgetFormContext'
+
 
 class ContentEdit extends Component {
     state = {
@@ -28,7 +29,7 @@ class ContentEdit extends Component {
 
     componentWillReceiveProps = (nextProps) => {
         const { item = {} } = nextProps
-        if(!this.state.loaded && item._id){
+        if (!this.state.loaded && item._id) {
             const keys = Object.keys(item)
             const itemState = {}
             keys.map(key => {
@@ -37,10 +38,10 @@ class ContentEdit extends Component {
             this.setState({ itemState, loaded: true })
         }
     }
-    
+
     updateValue = (e, { name, value, checked }) => {
         const { itemState = {} } = this.state;
-        itemState[name] = value || checked
+        itemState[name] = typeof checked === "undefined" ? value || '' : checked
         this.setState({ itemState, changes: true })
         return value;
     }
@@ -51,13 +52,13 @@ class ContentEdit extends Component {
         const method = `interface.update.${slugify(collection.label, { lower: true })}`;
         this.setState({ confirmation: false, loading: true })
         const self = this
-        Meteor.call(method, { item: itemState }, function(error, result){
+        Meteor.call(method, { item: itemState }, function (error, result) {
             self.setState({ loading: false })
-            if(result){
+            if (result) {
                 const itemId = item._id || result
                 notify.success('Changes saved')
                 history.push(`${root}/collections/${slugify(collection.label, { lower: true })}/${itemId}`)
-            } else if (error){
+            } else if (error) {
                 notify.error(error.reason)
             }
         })
@@ -68,12 +69,12 @@ class ContentEdit extends Component {
         this.setState({ confirmation: false, loading: true })
         const self = this
         const method = `interface.delete.${slugify(collection.label, { lower: true })}`;
-        Meteor.call(method, { itemId: item._id }, function(error, result){
+        Meteor.call(method, { itemId: item._id }, function (error, result) {
             self.setState({ loading: false })
-            if(result){
+            if (result) {
                 notify.success('Document deleted')
                 history.push(`${root}/collections/${slugify(collection.label, { lower: true })}`)
-            } else if (error){
+            } else if (error) {
                 notify.error(error.reason)
             }
         })
@@ -82,10 +83,10 @@ class ContentEdit extends Component {
     toggleConfirmationSave = (e) => {
         e.preventDefault();
         const confirmationObject = {
-          title: 'Save and publish the document',
-          text: 'You are about to save your modification and publish it immediatly',
-          cancel: () => this.setState({ confirmation: !this.state.confirmation }),
-          confirm: this.save,
+            title: 'Save and publish the document',
+            text: 'You are about to save your modification and publish it immediatly',
+            cancel: () => this.setState({ confirmation: !this.state.confirmation }),
+            confirm: this.save,
         };
         this.setState({ confirmation: !this.state.confirmation, confirmationObject });
     }
@@ -93,79 +94,82 @@ class ContentEdit extends Component {
     toggleConfirmationDelete = (e) => {
         e.preventDefault();
         const confirmationObject = {
-          title: 'Delete the document',
-          text: 'You are about to delete this document, this cannot be undone.',
-          cancel: () => this.setState({ confirmation: !this.state.confirmation }),
-          confirm: this.delete,
+            title: 'Delete the document',
+            text: 'You are about to delete this document, this cannot be undone.',
+            cancel: () => this.setState({ confirmation: !this.state.confirmation }),
+            confirm: this.delete,
         };
         this.setState({ confirmation: !this.state.confirmation, confirmationObject });
     }
 
-    render(){
+    render() {
         const { itemState = {}, changes, loaded, confirmationObject, confirmation, loading } = this.state;
         const { item = {}, history, ready, collection = {}, firstField, config = {}, root } = this.props;
 
         // Extract datas from config
         const { collections = [] } = config;
 
-        return(
+        return (
             <WidgetSelectorContext.Provider
                 value={{
                     collection,
                     item: itemState,
                     ready,
-                    updateValue: this.updateValue 
+                    updateValue: this.updateValue
                 }}
             >
-            <ContentEditStyle>
-            <Spring from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
-            { styles => 
-                <Segment style={{...styles, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Header content={`Single item from ${collection.label}: ${item._id ? 'EDITION' : 'NEW' }`} as="h5" />
-                    <div>
-                        {item._id ? 
-                            <Button
-                            content="DELETE"
-                            size="mini"
-                            icon="trash"
-                            onClick={this.toggleConfirmationDelete}
-                            color="red"
-                            labelPosition="left"
-                        />
-                        : null }
-                        <Button
-                            content={ changes === false ? "SAVED" : "SAVE"}
-                            size="mini"
-                            icon="save"
-                            onClick={ changes === false ? null : this.toggleConfirmationSave}
-                            color={ changes === false ? "grey" : "green"}
-                            labelPosition="left"
-                        />
-                    </div>
-                </Segment> }
-            </Spring>
-            <Spring from={{ opacity: 0, marginTop: 600 }} to={{ opacity: 1, marginTop: 0 }}>
-            { styles => 
-                <Segment style={styles} color="green">
-                    <Form loading={loading}>
-                        <WidgetFormSelector 
-                            collection={collection}
-                            item={itemState}
-                            ready={ready}
-                            config={config}
-                            updateValue={this.updateValue}
-                        />
-                    </Form>
-                </Segment>
-            }
-            </Spring>
-            <Confirmation
-                confirmation={confirmation}
-                loading={loading}
-                confirmationObject={confirmationObject}
-            />
-    </ContentEditStyle>
-    </WidgetSelectorContext.Provider>
+                <ContentEditStyle>
+                    <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
+                        {styles =>
+                            <animated.div style={styles} >
+                                <Segment style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                                    <Header content={`Single item from ${collection.label}: ${item._id ? 'EDITION' : 'NEW'}`} as="h5" />
+                                    <div>
+                                        {item._id ?
+                                            <Button
+                                                content="DELETE"
+                                                size="mini"
+                                                icon="trash"
+                                                onClick={this.toggleConfirmationDelete}
+                                                color="red"
+                                                labelPosition="left"
+                                            />
+                                            : null}
+                                        <Button
+                                            content={changes === false ? "SAVED" : "SAVE"}
+                                            size="mini"
+                                            icon="save"
+                                            onClick={changes === false ? null : this.toggleConfirmationSave}
+                                            color={changes === false ? "grey" : "green"}
+                                            labelPosition="left"
+                                        />
+                                    </div>
+                                </Segment>
+                            </animated.div>}
+                    </Spring>
+                    <Spring native from={{ opacity: 0, marginTop: 600 }} to={{ opacity: 1, marginTop: 0 }}>
+                        {styles =>
+                            <animated.div style={styles} >
+                                <Segment color="green">
+                                    <Form loading={loading}>
+                                        <WidgetFormSelector
+                                            collection={collection}
+                                            item={itemState}
+                                            ready={ready}
+                                            updateValue={this.updateValue}
+                                        />
+                                    </Form>
+                                </Segment>
+                            </animated.div>
+                        }
+                    </Spring>
+                    <Confirmation
+                        confirmation={confirmation}
+                        loading={loading}
+                        confirmationObject={confirmationObject}
+                    />
+                </ContentEditStyle>
+            </WidgetSelectorContext.Provider>
         )
     }
 }
@@ -178,10 +182,10 @@ export default withTracker(({ match, config = {} }) => {
 
     collections.map(coll => {
         const slug = slugify(coll.label, { lower: true })
-        if(slug === collectionSlug)
-        collection = coll
+        if (slug === collectionSlug)
+            collection = coll
     })
-    
+
     const subscription = Meteor.subscribe(`interface.one.${slugify(collection.label, { lower: true })}`, { itemId })
     const ready = subscription.ready()
 

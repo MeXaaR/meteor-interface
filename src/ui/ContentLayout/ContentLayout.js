@@ -1,8 +1,8 @@
 import React from 'react';
 
 // Packages
-import { 
-    Menu, 
+import {
+    Menu,
     Container,
     Divider,
     Rail,
@@ -24,12 +24,12 @@ const ContentBalancer = DynamicImporter(() => import('./pages/ContentBalancer'))
 const ContentView = DynamicImporter(() => import('./pages/ContentView'))
 const ContentEdit = DynamicImporter(() => import('./pages/ContentEdit'))
 
-const ContentLayout = ({ location, history, config, root }) => (
-    <ContentLayoutStyle>
-        <Container>
+const ContentLayout = ({ location, history, config, root, isMobile }) => (
+    <ContentLayoutStyle isMobile={isMobile}>
+        <Container >
             <Grid centered stackable>
                 <Grid.Column width={4}>
-                    <ContentLeftMenu 
+                    <ContentLeftMenu
                         location={location}
                         history={history}
                         config={config}
@@ -39,46 +39,46 @@ const ContentLayout = ({ location, history, config, root }) => (
                 <Grid.Column width={12}>
                     <Switch>
 
-                    <ConditionnalRoute
+                        <ConditionnalRoute
                             exact
                             path={`${root}/collections`}
-                            Element={ContentHome}  
-                            computedProps={{ config, root }}  
+                            Element={ContentHome}
+                            computedProps={{ config, root }}
                         />
                         <ConditionnalRoute
                             exact
                             path={`${root}/collections/:collectionSlug`}
-                            Element={ContentBalancer}  
-                            computedProps={{ config, root }}  
+                            Element={ContentBalancer}
+                            computedProps={{ config, root }}
                         />
                         <ConditionnalRoute
                             exact
                             path={`${root}/collections/:collectionSlug/new`}
-                            Element={ContentEdit}  
-                            computedProps={{ config, root }}  
+                            Element={ContentEdit}
+                            computedProps={{ config, root }}
                         />
                         <ConditionnalRoute
                             exact
                             path={`${root}/collections/:collectionSlug/:itemId`}
-                            Element={ContentView}  
-                            computedProps={{ config, root }}  
+                            Element={ContentView}
+                            computedProps={{ config, root }}
                         />
                         <ConditionnalRoute
                             exact
                             path={`${root}/collections/:collectionSlug/:itemId/edit`}
-                            Element={ContentEdit}  
-                            computedProps={{ config, root }}  
+                            Element={ContentEdit}
+                            computedProps={{ config, root }}
                         />
 
                     </Switch>
                 </Grid.Column>
             </Grid>
-        </Container>            
+        </Container>
     </ContentLayoutStyle>
 )
 
 export default ContentLayout
 
 const ContentLayoutStyle = styled.div`
-  
+
 `
