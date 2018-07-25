@@ -13,9 +13,9 @@ import {
 import styled from 'styled-components';
 
 // Components
-import Confirmation from '../../components/Confirmation'
 import WidgetFormSelector from '../components/WidgetFormSelector'
 import { WidgetSelectorContext } from '../../../utils/contexts/WidgetFormContext'
+import ConfirmationButton from '../../components/ConfirmationButton'
 
 
 class ContentEdit extends Component {
@@ -80,28 +80,6 @@ class ContentEdit extends Component {
         })
     }
 
-    toggleConfirmationSave = (e) => {
-        e.preventDefault();
-        const confirmationObject = {
-            title: 'Save and publish the document',
-            text: 'You are about to save your modification and publish it immediatly',
-            cancel: () => this.setState({ confirmation: !this.state.confirmation }),
-            confirm: this.save,
-        };
-        this.setState({ confirmation: !this.state.confirmation, confirmationObject });
-    }
-
-    toggleConfirmationDelete = (e) => {
-        e.preventDefault();
-        const confirmationObject = {
-            title: 'Delete the document',
-            text: 'You are about to delete this document, this cannot be undone.',
-            cancel: () => this.setState({ confirmation: !this.state.confirmation }),
-            confirm: this.delete,
-        };
-        this.setState({ confirmation: !this.state.confirmation, confirmationObject });
-    }
-
     render() {
         const { itemState = {}, changes, loaded, confirmationObject, confirmation, loading } = this.state;
         const { item = {}, history, ready, collection = {}, firstField, config = {}, root } = this.props;
@@ -126,22 +104,18 @@ class ContentEdit extends Component {
                                     <Header content={`Single item from ${collection.label}: ${item._id ? 'EDITION' : 'NEW'}`} as="h5" />
                                     <div>
                                         {item._id ?
-                                            <Button
-                                                content="DELETE"
-                                                size="mini"
-                                                icon="trash"
-                                                onClick={this.toggleConfirmationDelete}
-                                                color="red"
-                                                labelPosition="left"
+                                            <ConfirmationButton
+                                                dialog={["Delete", "Are You Sure?", "Once more to delete"]}
+                                                action={this.delete}
+                                                // action={() => console.log('yo')}
+                                                type='delete'
                                             />
                                             : null}
-                                        <Button
-                                            content={changes === false ? "SAVED" : "SAVE"}
-                                            size="mini"
-                                            icon="save"
-                                            onClick={changes === false ? null : this.toggleConfirmationSave}
-                                            color={changes === false ? "grey" : "green"}
-                                            labelPosition="left"
+                                        <ConfirmationButton
+                                            dialog={!changes ? ["Saved"] : ["Save", "Are You Sure?"]}
+                                            action={!changes ? () => console.log('no changes') : this.save}
+                                            times={2}
+                                            type={changes ? "save" : "saved"}
                                         />
                                     </div>
                                 </Segment>
@@ -163,11 +137,6 @@ class ContentEdit extends Component {
                             </animated.div>
                         }
                     </Spring>
-                    <Confirmation
-                        confirmation={confirmation}
-                        loading={loading}
-                        confirmationObject={confirmationObject}
-                    />
                 </ContentEditStyle>
             </WidgetSelectorContext.Provider>
         )
