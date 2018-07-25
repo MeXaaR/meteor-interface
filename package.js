@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mexar:meteor-interface',
-  version: '0.0.22',
+  version: '0.1.0',
   // Brief, one-line summary of the package.
   summary: 'Simple Content Management System to generate your administration interface for Meteor and React.',
   // URL to the Git repository containing the source code for this package.
@@ -10,7 +10,7 @@ Package.describe({
   documentation: 'README.md'
 });
 
-Package.onUse(function(api) {
+Package.onUse(function (api) {
   api.versionsFrom('1.7.0.3');
   api.use('ecmascript');
   api.mainModule('index.js');
@@ -37,6 +37,7 @@ Package.onUse(function(api) {
     "react-helmet": "5.2.0",
     "react-router-dom": "4.3.1",
     "react-spring": "5.3.18",
+    "react-sortable-hoc": "0.8.3",
     "react-tinymce": "0.7.0",
     "react-toastify": "4.1.0",
     "semantic-ui-react": "0.81.1",

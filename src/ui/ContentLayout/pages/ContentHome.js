@@ -1,10 +1,10 @@
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import slugify from 'slugify';
-import { Transition, Spring } from 'react-spring'
+import { Transition, Spring, animated } from 'react-spring'
 
 // Packages
-import { 
+import {
     Segment,
     Header,
     Statistic,
@@ -15,21 +15,23 @@ import styled from 'styled-components';
 
 const ContentHome = ({ counters = [], history, ready, config }) => {
     // Extract datas from config
-    const { 
+    const {
         root = '/admin',
         collections = [],
     } = config
-    
+
     return (
-    <ContentHomeStyle>
-            <Spring from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
-            { styles => 
-                <Segment style={styles}>
-                    <Header content="Dashboard" as="h5" />     
-                </Segment> }
+        <ContentHomeStyle>
+            <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
+                {styles =>
+                    <animated.div style={styles} >
+                        <Segment style={{ marginBottom: 14 }} >
+                            <Header content="Dashboard" as="h5" />
+                        </Segment>
+                    </animated.div>}
             </Spring>
-                { counters.length !== 0 ?
-                    <Grid stackable>
+            {counters.length !== 0 ?
+                <Grid stackable>
                     <Transition
                         keys={counters.map(count => count.name)}
                         from={{ marginTop: 1000 }}
@@ -37,14 +39,14 @@ const ContentHome = ({ counters = [], history, ready, config }) => {
                         leave={{ marginTop: 1000 }}>
                         {
                             counters.map(count => styless =>
-                                <Grid.Column 
-                                    width={8} 
-                                    key={count.name}  
+                                <Grid.Column
+                                    width={8}
+                                    key={count.name}
                                     style={styless}
-                                    onClick={() => history.push(`${root}/collections/${slugify(count.name, { lower: true })}`)} 
+                                    onClick={() => history.push(`${root}/collections/${slugify(count.name, { lower: true })}`)}
                                 >
                                     <Segment className="single-vignette" color="green">
-                                    { count.icon && <Icon color="grey" size="huge" name={count.icon} />}
+                                        {count.icon && <Icon color="grey" size="huge" name={count.icon} />}
                                         <Statistic size='small'>
                                             <Statistic.Value>
                                                 {count.number}
@@ -56,10 +58,11 @@ const ContentHome = ({ counters = [], history, ready, config }) => {
                             )
                         }
                     </Transition>
-                </Grid> 
-                : null }
-    </ContentHomeStyle>
-)}
+                </Grid>
+                : null}
+        </ContentHomeStyle>
+    )
+}
 
 
 export default withTracker(({ config }) => {
@@ -71,7 +74,7 @@ export default withTracker(({ config }) => {
     const { collections = [] } = config
 
     collections.map(coll => {
-        if(Roles.userIsInRole(Meteor.userId(), coll.visible)){
+        if (Roles.userIsInRole(Meteor.userId(), coll.visible)) {
             counters.push({
                 name: coll.label,
                 icon: coll.icon,
@@ -79,9 +82,9 @@ export default withTracker(({ config }) => {
             })
         }
     })
-    
+
     return { counters, ready };
-  })(ContentHome);
+})(ContentHome);
 
 const ContentHomeStyle = styled.div`
   h5.header {

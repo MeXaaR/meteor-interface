@@ -1,17 +1,17 @@
-import React, { Component, Fragment }     from "react"
+import React, { Component, Fragment } from "react"
 
 // Packages
-import { Helmet }               from "react-helmet";
-import { Switch, Route }        from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { Switch, Route } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
-import styled                   from 'styled-components';
+import styled from 'styled-components';
 
 
 // Components
-import DynamicImporter          from "../../utils/DynamicImporter";
-import ConditionnalRoute        from "../../utils/ConditionnalRoute";
-import MainMenu                 from './components/MainMenu'
-import UnderDev                 from '../components/UnderDev'
+import DynamicImporter from "../../utils/DynamicImporter";
+import ConditionnalRoute from "../../utils/ConditionnalRoute";
+import MainMenu from './components/MainMenu'
+import UnderDev from '../components/UnderDev'
 
 // Global Config
 import '../../styles'
@@ -23,83 +23,92 @@ const MediaManager = DynamicImporter(() => import('../MediaManager/MediaManager'
 const ProfileLayout = DynamicImporter(() => import('../Profile/ProfileLayout'))
 const Home = DynamicImporter(() => import('./components/Home'))
 
-class AdminLayout extends Component{
-  state = {
+class AdminLayout extends Component {
+    state = {
 
-  }
-
-componentWillReceiveProps = (nextProps) => {
-    const { location } = this.props;
-    if(location.pathname !== nextProps.location.pathname){
-      window.scrollTo(0,0)
     }
-  }
 
-  componentDidCatch = (error) => {
-    console.log(error)
-    this.setState({ error })
-  }
+    componentWillReceiveProps = (nextProps) => {
+        const { location } = this.props;
+        if (location.pathname !== nextProps.location.pathname) {
+            window.scrollTo(0, 0)
+        }
+    }
 
-  render() {
-    const { user, permissions, loggingIn, authenticated, authorized, config = {}, root } = this.props;
-    const { error } = this.state;
-    const isMobile = window.innerWidth < 768
-    if(error){
+    componentDidCatch = (error) => {
+        console.log(error)
+        this.setState({ error })
+    }
+
+    render() {
+        const { user, permissions, loggingIn, authenticated, authorized, config = {}, root } = this.props;
+        const { error } = this.state;
+        const isMobile = window.innerWidth < 768
+        if (error) {
+            return (
+                <div>{JSON.stringify(error)}</div>
+            )
+        }
         return (
-            <div>{JSON.stringify(error)}</div>
+            <MainMenu {...this.props}>
+                <AdminLayoutStyle id="admin-layout" isMobile={isMobile} >
+                    <Switch>
+
+                        <ConditionnalRoute
+                            exact
+                            path={`${root}`}
+                            Element={Home}
+                            computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config, isMobile }}
+                        />
+
+                        <ConditionnalRoute
+                            path={`${root}/collections`}
+                            Element={ContentLayout}
+                            computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config, isMobile }}
+                        />
+
+                        <ConditionnalRoute
+                            path={`${root}/media`}
+                            Element={MediaManager}
+                            computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config, isMobile }}
+                        />
+
+                        <ConditionnalRoute
+                            path={`${root}/profile`}
+                            Element={ProfileLayout}
+                            computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config, isMobile }}
+                        />
+
+                        <ConditionnalRoute
+                            path={`${root}/settings`}
+                            condition={permissions[config.roles[0]]}
+                            Element={SettingsLayout}
+                            redirect={root}
+                            computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config, isMobile }}
+                        />
+
+                    </Switch>
+                    <ToastContainer />
+                </AdminLayoutStyle>
+            </MainMenu>
         )
     }
-    return (
-        <MainMenu {...this.props}>
-      <AdminLayoutStyle id="admin-layout" isMobile={isMobile} >
-          <Switch>
-
-            <ConditionnalRoute
-                exact
-                path={`${root}`}
-                Element={Home}  
-                computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config }}  
-            />
-
-            <ConditionnalRoute
-                path={`${root}/collections`}
-                Element={ContentLayout}  
-                computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config }}  
-            />
-
-            <ConditionnalRoute
-                path={`${root}/media`}
-                Element={MediaManager}  
-                computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config }}  
-            />
-
-            <ConditionnalRoute
-                path={`${root}/profile`}
-                Element={ProfileLayout}  
-                computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config }}  
-            />
-
-            <ConditionnalRoute
-                path={`${root}/settings`}
-                condition={permissions[config.roles[0]]} 
-                Element={SettingsLayout}  
-                redirect={root} 	   
-                computedProps={{ user, permissions, loggingIn, authenticated, authorized, root, config }}  
-            />
-
-          </Switch>
-          <ToastContainer />
-          </AdminLayoutStyle>
-          </MainMenu>
-    )
-  }
 }
 
 export default AdminLayout;
 
 const AdminLayoutStyle = styled.main`
-  padding-top: ${ ({ isMobile }) => isMobile ? '45px' : '70px' } ;
+  padding-top: ${ ({ isMobile }) => isMobile ? '45px' : '70px'} ;
   min-height: 100vh;
+  @media only screen and (max-width: 767px){
+    .ui.container {
+        width: auto!important;
+        margin-left: 0em!important;
+        margin-right: 0em!important;
+    }
+  }
+
+
   .ui.form .field {
     label {
         background-color: #21ba45;

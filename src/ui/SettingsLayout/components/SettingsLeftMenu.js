@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 
 // Packages
-import { 
-    Menu, 
+import {
+    Menu,
     Input
 } from 'semantic-ui-react';
-import { Transition, Spring } from 'react-spring'
+import { Transition, Spring, animated } from 'react-spring'
 
 
 const settingsItem = [
@@ -16,32 +16,33 @@ const settingsItem = [
 
 const SettingsLeftMenu = ({ location = {}, history, root }) => (
     <Spring from={{ opacity: 0, marginLeft: -600 }} to={{ opacity: 1, marginLeft: 0 }}>
-        { styles => (
-            <Menu 
-                pointing 
-                fluid
-                vertical 
-                style={styles}
-                color="green"
-            >
-                <Transition
-                    keys={settingsItem.map(item => item.path)}
-                    from={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
-                    enter={{ opacity: 1, height: 40, paddingTop: 13, paddingBottom: 13 }}
-                    leave={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}>
-                    { settingsItem.map(item => styles => (
-                            <Menu.Item 
+        {styles => (
+            <animated.div style={styles}>
+                <Menu
+                    pointing
+                    fluid
+                    vertical
+                    color="green"
+                >
+                    <Transition
+                        keys={settingsItem.map(item => item.path)}
+                        from={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
+                        enter={{ opacity: 1, height: 40, paddingTop: 13, paddingBottom: 13 }}
+                        leave={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}>
+                        {settingsItem.map(item => styles => (
+                            <Menu.Item
                                 name={item.label}
                                 style={styles}
                                 icon={item.icon}
                                 key={item.path}
-                                active={location.pathname.indexOf(`${root}/settings/${item.path}`) > -1 }
-                                onClick={() => history.push(`${root}/settings/${item.path}`)} 
+                                active={location.pathname.indexOf(`${root}/settings/${item.path}`) > -1}
+                                onClick={() => history.push(`${root}/settings/${item.path}`)}
                             />
-                        )) 
-                    }
-                </Transition>
-            </Menu>
+                        ))
+                        }
+                    </Transition>
+                </Menu>
+            </animated.div>
         )}
     </Spring>
 )
