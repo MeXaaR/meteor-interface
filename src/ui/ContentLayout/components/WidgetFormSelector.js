@@ -258,8 +258,7 @@ class SingleWidget extends Component {
                                         value: date,
                                     })
                                 }
-                            }
-                            }
+                            }}
                             key={id}
                             value={item[field.name] instanceof Date ? item[field.name] : new Date()}
                         />
