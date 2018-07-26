@@ -1,7 +1,7 @@
 Package.describe({
   name: 'mexar:meteor-interface',
-  version: '0.1.1',
-  // Brief, one-line summary of the package.
+  version: '0.1.3',
+  // Brief, one-_line summary of the package.
   summary: 'Simple Content Management System to generate your administration interface for Meteor and React.',
   // URL to the Git repository containing the source code for this package.
   git: 'https://github.com/MeXaaR/meteor-interface.git',
@@ -32,6 +32,7 @@ Package.onUse(function (api) {
     "loadable-components": "2.2.2",
     "react-datetime-picker": "1.3.4",
     "moment": "2.22.2",
+    "prop-types": "15.6.2",
     "react": "16.4.1",
     "react-dom": "16.4.1",
     "react-helmet": "5.2.0",

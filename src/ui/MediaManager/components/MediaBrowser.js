@@ -99,7 +99,7 @@ class MediaBrowser extends Component {
 
     render() {
         const { confirmation, confirmationObject, loading, folders, files, route, link, error, selectedPicture } = this.state;
-        const { selector, updatePicture, currentPicture, config } = this.props;
+        const { selector, updatePicture, currentPicture, config = {} } = this.props;
 
         if (error) {
             throw new Error(error.message)
