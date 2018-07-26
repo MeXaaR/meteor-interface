@@ -55,7 +55,11 @@ export default class ConfirmationButton extends Component {
                 level={timesPressed}
                 onClick={this.onPress}
                 label={timer !== -1 ? timer : null}
+<<<<<<< HEAD
                 icon={type === 'delete' ? "trash" : 'save'}
+=======
+                icon="trash"
+>>>>>>> 5fabb6939673af27c778547a4baf5a177c87f62b
                 className='mini'
                 color={colors[type][timesPressed]}
                 labelPosition="left"

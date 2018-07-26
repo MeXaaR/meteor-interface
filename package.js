@@ -1,7 +1,12 @@
 Package.describe({
   name: 'mexar:meteor-interface',
+<<<<<<< HEAD
   version: '0.1.3',
   // Brief, one-_line summary of the package.
+=======
+  version: '0.1.1-1',
+  // Brief, one-line summary of the package.
+>>>>>>> 5fabb6939673af27c778547a4baf5a177c87f62b
   summary: 'Simple Content Management System to generate your administration interface for Meteor and React.',
   // URL to the Git repository containing the source code for this package.
   git: 'https://github.com/MeXaaR/meteor-interface.git',
