@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import slugify from 'slugify';
 import { Transition, Spring, animated } from 'react-spring'
@@ -13,69 +13,170 @@ import {
     Image,
     Pagination,
     Button,
+    Dropdown,
+    Checkbox,
 } from 'semantic-ui-react';
 import styled from 'styled-components';
+import ConfirmationButton from '../../components/ConfirmationButton';
 
-const ContentList = ({ history, ready, collection = {}, list = [], firstField, params = {}, number, root, config }) => {
-
-    const creatable = Roles.userIsInRole(Meteor.userId(), collection.create)
-    const currentParams = params.get()
-
-    const updateSearch = (e, { value }) => {
-        currentParams.search = value;
-        currentParams.page = 1;
-        params.set(currentParams)
+class ContentList extends Component {
+    state = {
+        selected: []
     }
 
-    return (
-        <ContentListStyle>
-            <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
-                {styles =>
-                    <animated.div style={styles} >
-                        <Segment style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Header style={{ marginBottom: 0 }} icon={collection.icon} content={collection.label} as="h5" />
-                            {creatable &&
-                                <Link to={`${root}/collections/${slugify(collection.label, { lower: true })}/new`}>
-                                    <Button
-                                        content="NEW"
-                                        size="mini"
-                                        icon="magic"
-                                        color="green"
-                                        labelPosition="left"
-                                    />
-                                </Link>}
-                        </Segment>
-                    </animated.div>}
-            </Spring>
-            <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
-                {styles =>
-                    <animated.div style={styles} >
-                        <Input
-                            placeholder="Search..."
-                            style={{ marginBottom: 10, marginTop: 10, borderRadius: 5, boxShadow: "1px 1px 2px 0px rgba(0,0,0, 0.3)" }}
-                            onChange={updateSearch}
-                            fluid
-                            value={currentParams.search}
-                        />
-                    </animated.div>}
-            </Spring>
-            <Spring native from={{ opacity: 0, marginTop: 600 }} to={{ opacity: 1, marginTop: 0 }}>
-                {styles2 =>
-                    <animated.div style={styles2} >
-                        <ListInTable
-                            list={list}
-                            history={history}
-                            collection={collection}
-                            firstField={firstField}
-                            params={params}
-                            number={number}
-                            root={root}
-                            config={config}
-                        />
-                    </animated.div>}
-            </Spring>
-        </ContentListStyle>
-    )
+    updateSearch = (e, { value }) => {
+        const { params = {} } = this.props;
+        const currentParams = params.get();
+        currentParams.search = value;
+        currentParams.page = 1;
+        params.set(currentParams);
+    }
+
+    selectItem = (e, { name }) => {
+        const { selected = [] } = this.state;
+        const itemIndex = selected.indexOf(name)
+        if (itemIndex > -1) {
+            selected.splice(itemIndex, 1)
+        } else {
+            selected.push(name)
+        }
+        this.setState({ selected })
+    }
+
+    deleteItems = () => {
+        const { collection } = this.props;
+        const { selected = [] } = this.state;
+        const method = `interface.delete.${slugify(collection.label, { lower: true })}`;
+        this.setState({ loading: true });
+        const self = this;
+        Meteor.call(method, { itemIds: selected }, function (error, result) {
+            if (result) {
+                self.setState({ loading: false, selected: [], duplicateConfirm: false, deleteConfirm: false })
+                notify.success('Documents deleted')
+            } else if (error) {
+                self.setState({ loading: false, duplicateConfirm: false, deleteConfirm: false })
+                notify.error(error.reason)
+            }
+        })
+    }
+
+    duplicateItems = () => {
+        const { collection } = this.props;
+        const { selected = [] } = this.state;
+        const method = `interface.duplicate.${slugify(collection.label, { lower: true })}`;
+        this.setState({ loading: true });
+        const self = this;
+        Meteor.call(method, { itemIds: selected }, function (error, result) {
+            if (result) {
+                self.setState({ loading: false, selected: [], duplicateConfirm: false, deleteConfirm: false })
+                notify.success('Documents duplicated')
+            } else if (error) {
+                self.setState({ loading: false, duplicateConfirm: false, deleteConfirm: false })
+                notify.error(error.reason)
+            }
+        })
+    }
+
+    toggleChoice = (e, { name }) => this.setState({ [name]: !this.state[name] })
+
+    cancel = () => this.setState({ duplicateConfirm: false, deleteConfirm: false })
+
+    render() {
+        const { history, collection = {}, list = [], firstField, params = {}, number, root, config } = this.props
+        const { selected = [], duplicateConfirm, deleteConfirm, loading } = this.state;
+
+
+        const creatable = Roles.userIsInRole(Meteor.userId(), collection.create)
+        const currentParams = params.get()
+        return (
+            <ContentListStyle>
+                <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
+                    {styles =>
+                        <animated.div style={styles} >
+                            <Segment style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Header style={{ marginBottom: 0 }} icon={collection.icon} content={collection.label} as="h5" />
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    {(deleteConfirm || duplicateConfirm) &&
+                                        <Spring native from={{ opacity: 0 }} to={{ opacity: 1 }}>
+                                            {styles =>
+                                                <animated.div style={styles}>
+                                                    <ConfirmationButton
+                                                        dialog={deleteConfirm ?
+                                                            ["Delete", "Are You Sure?", "Once more to delete"]
+                                                            :
+                                                            ["Duplicate", "Are You Sure?"]
+                                                        }
+                                                        loading={loading}
+                                                        times={deleteConfirm ? 3 : 2}
+                                                        action={deleteConfirm ? this.deleteItems : this.duplicateItems}
+                                                        colors={deleteConfirm ? null : ['teal', 'teal']}
+                                                        onCancel={this.cancel}
+                                                        started={true}
+                                                        type={deleteConfirm ? "trash" : "copy"}
+                                                    />
+                                                </animated.div>
+                                            }
+                                        </Spring>}
+                                    {creatable && selected.length > 0 && !deleteConfirm && !duplicateConfirm &&
+                                        <Spring native from={{ opacity: 0 }} to={{ opacity: 1 }}>
+                                            {styles =>
+                                                <animated.div style={styles}>
+                                                    <Dropdown text='ACTIONS' icon='cogs' floating labeled button className='mini teal icon'>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item content="Delete" icon="trash" onClick={this.toggleChoice} name="deleteConfirm" />
+                                                            <Dropdown.Item content="Duplicate" icon="copy" onClick={this.toggleChoice} name="duplicateConfirm" />
+
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </animated.div>
+                                            }
+                                        </Spring>}
+                                    {creatable &&
+                                        <Link to={`${root}/collections/${slugify(collection.label, { lower: true })}/new`}>
+                                            <Button
+                                                content="NEW"
+                                                size="mini"
+                                                icon="magic"
+                                                color="green"
+                                                labelPosition="left"
+                                            />
+                                        </Link>}
+                                </div>
+                            </Segment>
+                        </animated.div>}
+                </Spring>
+                <Spring native from={{ opacity: 0, marginLeft: 600 }} to={{ opacity: 1, marginLeft: 0 }}>
+                    {styles =>
+                        <animated.div style={styles} >
+                            <Input
+                                placeholder="Search..."
+                                style={{ marginBottom: 10, marginTop: 10, borderRadius: 5, boxShadow: "1px 1px 2px 0px rgba(0,0,0, 0.3)" }}
+                                onChange={this.updateSearch}
+                                fluid
+                                value={currentParams.search}
+                            />
+                        </animated.div>}
+                </Spring>
+                <Spring native from={{ opacity: 0, marginTop: 600 }} to={{ opacity: 1, marginTop: 0 }}>
+                    {styles2 =>
+                        <animated.div style={styles2} >
+                            <ListInTable
+                                list={list}
+                                history={history}
+                                collection={collection}
+                                firstField={firstField}
+                                params={params}
+                                number={number}
+                                root={root}
+                                config={config}
+                                selectItem={this.selectItem}
+                                selected={selected}
+                            />
+                        </animated.div>}
+                </Spring>
+            </ContentListStyle>
+        )
+    }
 }
 
 export default ContentList
@@ -102,7 +203,7 @@ const ContentListStyle = styled.div`
   }
 `
 
-const ListInTable = ({ history, collection = {}, list = [], firstField, style, params, number, root, config }) => {
+const ListInTable = ({ history, collection = {}, list = [], firstField, style, params, number, root, config, selected, selectItem }) => {
     let imageField = null
     collection.fields.map(field => {
         if (field.widget === 'image') {
@@ -119,6 +220,18 @@ const ListInTable = ({ history, collection = {}, list = [], firstField, style, p
         params.set(currentParams)
     }
 
+    // const deleteItem = (itemId) => {
+    //     const method = `interface.delete.${slugify(collection.label, { lower: true })}`;
+    //     Meteor.call(method, { itemId }, function (error, result) {
+    //         self.setState({ loading: false })
+    //         if (result) {
+    //             notify.success('Document deleted')
+    //         } else if (error) {
+    //             notify.error(error.reason)
+    //         }
+    //     })
+    // }
+
     return (
         <Table size='small' celled selectable style={style} color="green">
             <Table.Header>
@@ -132,7 +245,13 @@ const ListInTable = ({ history, collection = {}, list = [], firstField, style, p
                 {list.map(item =>
                     <Table.Row key={item._id} >
                         <Table.Cell>
-                            <Header as='h5' image={imageField ? true : false}>
+                            <Header as='h5' style={{ display: "flex", alignItems: "center" }} image={imageField ? true : false}>
+                                <Checkbox
+                                    style={{ marginRight: 8 }}
+                                    checked={selected.indexOf(item._id) > -1}
+                                    onChange={selectItem}
+                                    name={item._id}
+                                />
                                 {imageField ? <Image src={item[imageField]} rounded size='mini' /> : null}
                                 <Header.Content>
                                     {item[firstField] || item.name || item.title || item.username}
@@ -141,6 +260,12 @@ const ListInTable = ({ history, collection = {}, list = [], firstField, style, p
                             </Header>
                         </Table.Cell>
                         <Table.Cell collapsing>
+                            {/*editable &&
+                                <ConfirmationButton
+                                    dialog={["Delete", "Delete", "Delete"]}
+                                    action={() => deleteItem(item._id)}
+                                    type='trash'
+                            />*/}
                             {editable &&
                                 <Button
                                     onClick={() => history.push(`${root}/collections/${slugify(collection.label, { lower: true })}/${item._id}/edit`)}

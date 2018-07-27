@@ -18,6 +18,12 @@ export default class ConfirmationButton extends Component {
         timer: -1
     };
 
+    componentDidMount = () => {
+        if (this.props.started) {
+            this.onPress()
+        }
+    }
+
     onPress = () => {
         let { timesPressed, timer } = this.state;
         const { action, times } = this.props;
@@ -42,22 +48,28 @@ export default class ConfirmationButton extends Component {
                 }, () => this.startInterval(timesPressed, timer - 1));
             } else if (this.state.timer === 0) {
                 this.setState({ timesPressed: 0, timer: -1 });
+                if (this.props.onCancel) {
+                    this.props.onCancel()
+                }
             }
-        }, 1500)
+        }, 1000)
     }
 
 
     render() {
         const { timesPressed, timer } = this.state;
-        const { dialog, type } = this.props;
+        const { dialog, type, colors, disabled, loading } = this.props;
+        const colorsData = colors ? colors : colorsDefault[type]
         return (
             <ButtonWrapped
                 level={timesPressed}
                 onClick={this.onPress}
-                label={timer !== -1 ? timer : null}
-                icon={type === 'delete' ? "trash" : 'save'}
+                label={timer !== -1 && !loading ? timer : null}
+                icon={type}
+                loading={loading}
+                disabled={disabled}
                 className='mini'
-                color={colors[type][timesPressed]}
+                color={colorsData[timesPressed]}
                 labelPosition="left"
                 content={dialog[timesPressed]}
             />
@@ -65,9 +77,8 @@ export default class ConfirmationButton extends Component {
     }
 }
 
-const colors = {
-    delete: ['grey', 'orange', 'red'],
-    saved: ['grey'],
+const colorsDefault = {
+    trash: ['grey', 'orange', 'red'],
     save: ['green', 'green'],
 }
 

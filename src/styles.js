@@ -1,7 +1,7 @@
-import { injectGlobal }         from 'styled-components';
+import { injectGlobal } from 'styled-components';
 
 injectGlobal`
-    *:not(i) {
+    *:not(i):not(.text) {
         font-family: Oswald;
     }
     input {

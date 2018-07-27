@@ -108,14 +108,16 @@ class ContentEdit extends Component {
                                                 dialog={["Delete", "Are You Sure?", "Once more to delete"]}
                                                 action={this.delete}
                                                 // action={() => console.log('yo')}
-                                                type='delete'
+                                                type='trash'
                                             />
                                             : null}
                                         <ConfirmationButton
                                             dialog={!changes ? ["Saved"] : ["Save", "Are You Sure?"]}
                                             action={!changes ? () => console.log('no changes') : this.save}
                                             times={2}
-                                            type={changes ? "save" : "saved"}
+                                            disabled={!changes}
+                                            colors={!changes ? ['grey'] : null}
+                                            type={"save"}
                                         />
                                     </div>
                                 </Segment>
