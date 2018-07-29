@@ -58,7 +58,6 @@ const initMethods = () => {
         }
         return itemIds.map(itemId => {
           const item = coll.mongo.findOne({ _id: itemId }, { fields: { _id: 0 } });
-          console.log(item)
           coll.mongo.insert({ ...item })
         })
       } catch (error) {

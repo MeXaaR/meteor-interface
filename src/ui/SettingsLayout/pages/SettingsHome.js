@@ -22,7 +22,6 @@ const SettingsHome = ({ config = {} }) => {
     some important stuffs. Only people with the highest rank can access to this part
     of your Interface.
     `;
-    console.log(roles)
 
     const list2 = []
 

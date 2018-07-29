@@ -36,7 +36,6 @@ class AdminLayout extends Component {
     }
 
     componentDidCatch = (error) => {
-        console.log(error)
         this.setState({ error })
     }
 

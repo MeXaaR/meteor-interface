@@ -145,7 +145,6 @@ export default ErrorHandler(withTracker(({ config }) => {
     const subscription = Meteor.subscribe('interface.settings.all')
     const ready = subscription.ready()
 
-    console.log(InterfaceCollections)
     const interfaceSettings = InterfaceCollections.settings.findOne()
     return { ready, interfaceSettings };
 })(SettingsKeys));

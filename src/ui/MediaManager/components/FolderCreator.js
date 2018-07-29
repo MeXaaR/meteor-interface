@@ -33,7 +33,6 @@ class FolderCreator extends Component {
             self.setState({ loading: false })
             if(result){
                 const { err, link } = result
-                console.log(result)
                 if(err){
                     self.setState({ error: err })
                     self.toggleModal()

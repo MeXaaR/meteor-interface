@@ -45,7 +45,6 @@ class MediaBrowser extends Component {
             self.setState({ loading: false })
             if (result) {
                 const { CommonPrefixes, Contents, Prefix, link, err } = result
-                console.log(result)
                 if (err) {
                     self.setState({ error: err })
                 } else {
@@ -70,7 +69,6 @@ class MediaBrowser extends Component {
         Meteor.call(method, { file: objectToDelete }, function (error, result = {}) {
             self.setState({ loading: false })
             if (result) {
-                console.log(result)
                 self.goFolder(route)
                 self.closeConfirm()
             } else if (error) {

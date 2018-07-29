@@ -51,14 +51,11 @@ class SingleToast extends Component {
           self.setState({ complete: false })
         } else {
           const { err, link } = result
-          console.log(result)
           if(err){
               self.setState({ error: err.message || "There has been an error !!" })
-              console.log(result)
               successCallback()
           } else {
               self.setState({ complete: true })
-              console.log(result)
               successCallback()
           }
         }

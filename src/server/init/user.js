@@ -12,7 +12,6 @@ const initUser = () => {
         logs && console.log('There are no roles in your config file. Please add at least one role to have an administration security!')
     } else if (isThereSomeRoles && !Meteor.users.findOne()) {
         logs && console.log('------ FIRST USER INITIALIZATION ------')
-        console.log('ok')
         const firstUser = {
             username: 'admin',
             email: 'admin@admin.fr',

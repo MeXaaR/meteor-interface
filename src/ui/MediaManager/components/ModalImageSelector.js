@@ -21,7 +21,6 @@ class ModalImageSelector extends Component {
             value: link
         })
         this.toggleModal()
-        console.log(link)
     }
 
     render() {

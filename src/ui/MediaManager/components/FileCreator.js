@@ -23,7 +23,6 @@ class FolderCreator extends Component {
     createFile = () => {
         const { file } = this.state;
         const { refresh, route, loading } = this.props;
-        console.log(this.props)
         this.toggleModal()
         upload({
             file,
