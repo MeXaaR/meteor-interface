@@ -7,7 +7,9 @@ import configuration from '../../lib/configuration'
 const initPublications = () => {
     const config = configuration.get()
     // Extract datas from config
-    const { collections = [] } = config
+    const { collections = [], logs } = config
+    logs && console.log('------ PUBLICATIONS CREATION FINISHED------');
+    let publications = ['interface.counters.all.collections']
 
     Meteor.publish('interface.counters.all.collections', function () {
         collections.map(coll => {
@@ -18,6 +20,7 @@ const initPublications = () => {
     });
 
     collections.map(coll => {
+
         Meteor.publish(`interface.all.${slugify(coll.label, { lower: true })}`, function ({ search = '', page }) {
             const isAuthorized = Roles.userIsInRole(this.userId, coll.visible);
             if (!isAuthorized) {
@@ -28,6 +31,7 @@ const initPublications = () => {
             Counts.publish(this, `count-all-${slugify(coll.label, { lower: true })}`, coll.mongo.find(research));
             return coll.mongo.find(research, { limit: 10, skip: (page - 1) * 10 });
         });
+
         Meteor.publish(`interface.one.${slugify(coll.label, { lower: true })}`, function ({ itemId }) {
             const isAuthorized = Roles.userIsInRole(this.userId, coll.visible);
             if (!isAuthorized) {
@@ -35,6 +39,8 @@ const initPublications = () => {
             }
             return coll.mongo.find({ _id: itemId }, { sort: { _id: 1 }, limit: 1 });
         });
+
+
         Meteor.publish(`interface.single.${slugify(coll.label, { lower: true })}`, function () {
             const isAuthorized = Roles.userIsInRole(this.userId, coll.visible);
             if (!isAuthorized) {
@@ -42,7 +48,18 @@ const initPublications = () => {
             }
             return coll.mongo.find({}, { sort: { _id: 1 }, limit: 1 });
         });
+
+        publications = [
+            ...publications,
+            `interface.all.${slugify(coll.label, { lower: true })}`,
+            `interface.one.${slugify(coll.label, { lower: true })}`,
+            `interface.single.${slugify(coll.label, { lower: true })}`,
+        ]
     })
+
+
+    logs && console.log(publications)
+    logs && console.log('------ PUBLICATIONS CREATION FINISHED------');
 }
 
 export default initPublications
