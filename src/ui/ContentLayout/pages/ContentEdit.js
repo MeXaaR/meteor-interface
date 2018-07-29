@@ -109,6 +109,7 @@ class ContentEdit extends Component {
                                                 action={this.delete}
                                                 // action={() => console.log('yo')}
                                                 type='trash'
+                                                loading={loading}
                                             />
                                             : null}
                                         <ConfirmationButton
@@ -118,6 +119,7 @@ class ContentEdit extends Component {
                                             disabled={!changes}
                                             colors={!changes ? ['grey'] : null}
                                             type={"save"}
+                                            loading={loading}
                                         />
                                     </div>
                                 </Segment>

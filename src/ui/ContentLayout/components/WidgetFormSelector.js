@@ -132,7 +132,7 @@ class SingleWidget extends Component {
                     )
                 }
             default:
-                widget = <div>There is an error with the widget name {field.widget}</div>
+                return (<div>There is an error with the widget name {field.widget}</div>)
                 break
         }
     }

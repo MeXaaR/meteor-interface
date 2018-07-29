@@ -112,6 +112,7 @@ class ContentList extends Component {
                                                         colors={deleteConfirm ? null : ['teal', 'teal']}
                                                         onCancel={this.cancel}
                                                         started={true}
+                                                        loading={loading}
                                                         type={deleteConfirm ? "trash" : "copy"}
                                                     />
                                                 </animated.div>
