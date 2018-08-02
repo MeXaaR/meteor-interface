@@ -48,9 +48,10 @@ const ContentHome = ({ counters = [], history, ready, config }) => {
                                     <Segment className="single-vignette" color="green">
                                         {count.icon && <Icon color="grey" size="huge" name={count.icon} />}
                                         <Statistic size='small'>
-                                            <Statistic.Value>
-                                                {count.number}
-                                            </Statistic.Value>
+                                            {!count.single &&
+                                                <Statistic.Value>
+                                                    {count.number}
+                                                </Statistic.Value>}
                                             <Statistic.Label>{count.name}</Statistic.Label>
                                         </Statistic>
                                     </Segment>
@@ -78,6 +79,7 @@ export default withTracker(({ config }) => {
             counters.push({
                 name: coll.label,
                 icon: coll.icon,
+                single: coll.single,
                 number: Counts.get(`count-all-${slugify(coll.label, { lower: true })}`)
             })
         }
